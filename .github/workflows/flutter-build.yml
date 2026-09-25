@@ -778,6 +778,9 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           submodules: recursive
+      - name: Sync submodule to ahooraco
+        run: git submodule update --remote --recursive
+
 
       - name: Import the codesign cert
         if: env.MACOS_P12_BASE64 != null
