@@ -54,14 +54,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Sync submodule to ahooraco fork
-        run: |
-          cd libs/hbb_common
-          git remote set-url origin https://github.com/alirangkhooni-dot/hbb_common.git
-          git fetch origin master
-          git checkout origin/master
-          cd ../..
-
       - name: Restore bridge files
         uses: actions/download-artifact@v4
         with:
