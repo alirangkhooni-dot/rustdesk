@@ -242,39 +242,6 @@ jobs:
         shell: bash
         run: |
           pip3 install requests argparse
-          BASE_URL=${{ env.SIGN_BASE_URL }} SECRET_KEY=${{ secrets.SIGN_SECRET_KEY }} python3 res        if: env.UPLOAD_ARTIFACT == 'true'
-        run: |
-          sed -i '/dpiAware/d' res/manifest.xml
-          pushd ./libs/portable
-          pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
-          mkdir ../../SignOutput
-          mv ./rustdesk.exe ../../SignOutput/
-          popd
-          mv ./SignOutput/rustdesk.exe ./SignOutput/rustdesk-${{ env.VERSION }}-x86_64.exe
-
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-        with:
-          msbuild-architecture: x86
-
-      - name: Build msi
-        shell: pwsh
-        run: |
-          $msiPlatform = "x64"
-          pushd res\msi
-          python preprocess.py --arp -d ../../rustdesk
-          nuget restore msi.sln
-          msbuild msi.sln -p:Configuration=Release -p:Platform=$msiPlatform /p:TargetVersion=Windows10
-          popd
-          mv res\msi\bin\Release\rustdesk.msi ./SignOutput/rustdesk-${{ env.VERSION }}-x86_64.msi
-          sha256sum ./SignOutput/rustdesk-${{ env.VERSION }}-x86_64.msi
-
-      - name: Sign rustdesk self-extracted file
-        if: env.UPLOAD_ARTIFACT == 'true' && env.SIGN_BASE_URL != '-2'
-        shell: bash
-        run: |
-          pip3 install requests argparse
           BASE_URL=${{ env.SIGN_BASE_URL }} SECRET_KEY=${{ secrets.SIGN_SECRET_KEY }} python3 res/job.py sign_files ./SignOutput
 
       - name: Publish Release
@@ -284,4 +251,4 @@ jobs:
           prerelease: true
           tag_name: ${{ env.TAG_NAME }}
           files: |
-            ./SignOutput/rustdesk-
+            ./SignOutput/*
