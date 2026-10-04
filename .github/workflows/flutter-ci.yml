@@ -1,24 +1,21 @@
-name: Full Flutter CI
+name: .github/workflows/flutter-ci.yml
 
 on:
   workflow_dispatch:
-  pull_request:
-    paths-ignore:
-    - "docs/**"
-    - "README.md"
   push:
     branches:
       - master
-    paths-ignore:
-      - ".github/**"
-      - "docs/**"
-      - "README.md"
-      - "res/**"
-      - "appimage/**"
-      - "flatpak/**"
+    paths:
+      - 'src/**'
+      - 'libs/**'
+      - 'flutter/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/**'
 
 jobs:
-  run-ci:
+  build-windows:
     uses: ./.github/workflows/flutter-build.yml
     with:
       upload-artifact: true
+      upload-tag: "nightly"
